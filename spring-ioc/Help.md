@@ -31,7 +31,7 @@ getBean() method to be called.
 
 ## What is Configuration Metadata?
 
-From the above diagram, the Spring IoC container consumes a form of configuration metadata. This configuration metadata
+The Spring IoC container consumes a form of configuration metadata. This configuration metadata
 represents how you, as an application developer, tell the Spring container to instantiate, configure, and assemble the
 objects in your application.
 
@@ -52,3 +52,10 @@ Spring provides many ApplicationContext interface implementations that we use ar
    can use this class to load the file and get the container object
 3. **FileSystemXmlApplicationContext**: This is similar to ClassPathXmlApplicationContext except that the XML configuration
    file can be loaded from anywhere in the file system.
+4. AnnotationConfigWebApplicationContext and XmlWebApplicationContext for web applications.
+---
+## How to Retrieve Bean from Spring Container?
+```java
+HelloWorld obj = (HelloWorld) context.getBean("helloWorld");
+HelloWorld helloObject = (HelloWorld) context.getBean(HelloWorld.class);
+```
