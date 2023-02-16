@@ -27,6 +27,8 @@ One main difference between BeanFactory and ApplicationContext is that BeanFacto
 getBean() method while ApplicationContext instantiates singleton bean when the container is started, It doesn't wait for
 getBean() method to be called.
 
+Both BeanFactory and ApplicationContext provides a way to get a bean from Spring IOC container by calling getBean("bean name")
+
 ---
 
 ## What is Configuration Metadata?
@@ -58,4 +60,115 @@ Spring provides many ApplicationContext interface implementations that we use ar
 ```java
 HelloWorld obj = (HelloWorld) context.getBean("helloWorld");
 HelloWorld helloObject = (HelloWorld) context.getBean(HelloWorld.class);
+```
+---
+# XML-based configuration
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+       
+    <!--Set Property Value -->      
+    <bean id="manager" class="ir.lazydeveloper.Manager">
+         <property name="firstName" value="Alireza"/>  
+    </bean>
+       
+    <!--Set Scope Type -->   
+    <bean id="manager1" class="ir.lazydeveloper.Manager" scope="prototype"/>
+       
+     <!--Set Constructor Value -->
+     <bean id="manager" class="ir.lazydeveloper.session01.Manager">
+        <constructor-arg name="name" value="Alireza"/>
+    </bean>
+    <bean id="manager1" class="ir.lazydeveloper.session01.Manager">
+        <constructor-arg index="0" value="Ahamad"/>
+    </bean>
+       
+   
+     <bean id="managerService" class="ir.lazydeveloper.session01.ManagerService">
+        <property name="mailService" ref="yahooService"/>
+    </bean>
+
+    <bean id="yahooService" class="ir.lazydeveloper.session01.MailService"/>
+</beans>
+```
+---
+| Scope    |   Scope    |  Result |
+|----------|:----------:|--------:|
+| Singlton |  Singlton  |   OK    |
+| Prtotype |  Prtotype  |   OK    |
+| Prtotype |  Singlton  |   OK    |
+| Singlton |  Prtotype  |   NO    |
+
+---
+## Factory Design Pattern Useing Spring
+```xaml
+  <bean id="managerService" factory-bean="factory" factory-method="getManagerService">
+        <property name="mailService" ref="emailService"/>
+    </bean>
+    <bean id="factory" class="ir.lazydeveloper.session01.bahador.ManagerServiceFactory"/>
+    <bean id="emailService" class="ir.lazydeveloper.session01.MailService"/>
+   ```
+
+   ```java
+   public class ManagerServiceFactory {
+    public ManagerService getManagerService() {
+        ManagerService managerService = new ManagerService();
+        return managerService;
+    }
+}
+   ```
+---
+## Setter XML Injection
+```xml
+ <bean id="managerService" class="ir.lazydeveloper.service.ManagerService">
+        <property name="mailService" ref="yahooService"/>
+    </bean>
+
+    <bean id="yahooService" class="ir.lazydeveloper.service.MailService"/>
+```
+## Constructor XML Injection
+```xml
+<bean id="notificationService" class="com.nikamooz.spring.service.NotificationService">
+<constructor-arg ref="notifier"/>
+</bean>
+<bean id="notifier" class="com.nikamooz.spring.service.Notifier"/>
+```
+
+The @Autowired annotation is used in Constructor injection, Setter injection, and Field injection.
+
+The @Qualifier annotation is used in conjunction with @Autowired to avoid confusion when we have two or more beans configured for the same type.
+
+---
+## @DependsOn Annotation 
+The @DependsOn annotation can force the Spring IoC container to initialize one or more beans before the bean which is annotated by @DependsOn annotation.
+```java
+@Configuration
+public class AppConfig {
+
+    @Bean("firstBean")
+    @DependsOn(value = {
+        "secondBean",
+        "thirdBean"
+    })
+    public FirstBean firstBean() {
+        return new FirstBean();
+    }
+
+    @Bean("secondBean")
+    public SecondBean secondBean() {
+        return new SecondBean();
+    }
+
+    @Bean("thirdBean")
+    public ThirdBean thirdBean() {
+        return new ThirdBean();
+    }
+}
+
 ```
