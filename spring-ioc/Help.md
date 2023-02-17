@@ -27,15 +27,16 @@ One main difference between BeanFactory and ApplicationContext is that BeanFacto
 getBean() method while ApplicationContext instantiates singleton bean when the container is started, It doesn't wait for
 getBean() method to be called.
 
-Both BeanFactory and ApplicationContext provides a way to get a bean from Spring IOC container by calling getBean("bean name")
+Both BeanFactory and ApplicationContext provides a way to get a bean from Spring IOC container by calling getBean("bean
+name")
 
 ---
 
 ## What is Configuration Metadata?
 
-The Spring IoC container consumes a form of configuration metadata. This configuration metadata
-represents how you, as an application developer, tell the Spring container to instantiate, configure, and assemble the
-objects in your application.
+The Spring IoC container consumes a form of configuration metadata. This configuration metadata represents how you, as
+an application developer, tell the Spring container to instantiate, configure, and assemble the objects in your
+application.
 
 > Three ways we can supply Configuration Metadata to Spring IoC container
 >1. XML-based configuration
@@ -48,21 +49,27 @@ objects in your application.
 
 Spring provides many ApplicationContext interface implementations that we use are;
 
-1. **AnnotationConfigApplicationContext**: If we are using Spring in standalone Java applications and using annotations for
-   Configuration, then we can use this to initialize the container and get the bean objects.
-2. **ClassPathXmlApplicationContext**: If we have spring bean configuration XML file in a standalone application, then we
-   can use this class to load the file and get the container object
-3. **FileSystemXmlApplicationContext**: This is similar to ClassPathXmlApplicationContext except that the XML configuration
-   file can be loaded from anywhere in the file system.
+1. **AnnotationConfigApplicationContext**: If we are using Spring in standalone Java applications and using annotations
+   for Configuration, then we can use this to initialize the container and get the bean objects.
+2. **ClassPathXmlApplicationContext**: If we have spring bean configuration XML file in a standalone application, then
+   we can use this class to load the file and get the container object
+3. **FileSystemXmlApplicationContext**: This is similar to ClassPathXmlApplicationContext except that the XML
+   configuration file can be loaded from anywhere in the file system.
 4. AnnotationConfigWebApplicationContext and XmlWebApplicationContext for web applications.
+
 ---
+
 ## How to Retrieve Bean from Spring Container?
+
 ```java
-HelloWorld obj = (HelloWorld) context.getBean("helloWorld");
-HelloWorld helloObject = (HelloWorld) context.getBean(HelloWorld.class);
+HelloWorld obj=(HelloWorld)context.getBean("helloWorld");
+        HelloWorld helloObject=(HelloWorld)context.getBean(HelloWorld.class);
 ```
+
 ---
+
 # XML-based configuration
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -72,41 +79,36 @@ HelloWorld helloObject = (HelloWorld) context.getBean(HelloWorld.class);
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
-       
-    <!--Set Property Value -->      
+
+    <!--Set Property Value -->
     <bean id="manager" class="ir.lazydeveloper.Manager">
-         <property name="firstName" value="Alireza"/>  
+        <property name="firstName" value="Alireza"/>
     </bean>
-       
-    <!--Set Scope Type -->   
+
+    <!--Set Scope Type -->
     <bean id="manager1" class="ir.lazydeveloper.Manager" scope="prototype"/>
-       
-     <!--Set Constructor Value -->
-     <bean id="manager" class="ir.lazydeveloper.session01.Manager">
+
+    <!--Set Constructor Value -->
+    <bean id="manager" class="ir.lazydeveloper.session01.Manager">
         <constructor-arg name="name" value="Alireza"/>
     </bean>
     <bean id="manager1" class="ir.lazydeveloper.session01.Manager">
         <constructor-arg index="0" value="Ahamad"/>
     </bean>
-       
-   
-     <bean id="managerService" class="ir.lazydeveloper.session01.ManagerService">
+
+
+    <bean id="managerService" class="ir.lazydeveloper.session01.ManagerService">
         <property name="mailService" ref="yahooService"/>
     </bean>
 
     <bean id="yahooService" class="ir.lazydeveloper.session01.MailService"/>
 </beans>
 ```
----
-| Scope    |   Scope    |  Result |
-|----------|:----------:|--------:|
-| Singlton |  Singlton  |   OK    |
-| Prtotype |  Prtotype  |   OK    |
-| Prtotype |  Singlton  |   OK    |
-| Singlton |  Prtotype  |   NO    |
 
 ---
+
 ## Factory Design Pattern Useing Spring
+
 ```xaml
   <bean id="managerService" factory-bean="factory" factory-method="getManagerService">
         <property name="mailService" ref="emailService"/>
@@ -123,38 +125,51 @@ HelloWorld helloObject = (HelloWorld) context.getBean(HelloWorld.class);
     }
 }
    ```
----
-## Setter XML Injection
-```xml
- <bean id="managerService" class="ir.lazydeveloper.service.ManagerService">
-        <property name="mailService" ref="yahooService"/>
-    </bean>
 
-    <bean id="yahooService" class="ir.lazydeveloper.service.MailService"/>
-```
-## Constructor XML Injection
+---
+
+## Setter XML Injection
+
 ```xml
+
+<bean id="managerService" class="ir.lazydeveloper.service.ManagerService">
+    <property name="mailService" ref="yahooService"/>
+</bean>
+
+<bean id="yahooService" class="ir.lazydeveloper.service.MailService"/>
+```
+
+## Constructor XML Injection
+
+```xml
+
 <bean id="notificationService" class="com.nikamooz.spring.service.NotificationService">
-<constructor-arg ref="notifier"/>
+    <constructor-arg ref="notifier"/>
 </bean>
 <bean id="notifier" class="com.nikamooz.spring.service.Notifier"/>
 ```
 
 The @Autowired annotation is used in Constructor injection, Setter injection, and Field injection.
 
-The @Qualifier annotation is used in conjunction with @Autowired to avoid confusion when we have two or more beans configured for the same type.
+The @Qualifier annotation is used in conjunction with @Autowired to avoid confusion when we have two or more beans
+configured for the same type.
 
 ---
-## @DependsOn Annotation 
-The @DependsOn annotation can force the Spring IoC container to initialize one or more beans before the bean which is annotated by @DependsOn annotation.
+
+## @DependsOn Annotation
+
+The @DependsOn annotation can force the Spring IoC container to initialize one or more beans before the bean which is
+annotated by @DependsOn annotation.
+
 ```java
+
 @Configuration
 public class AppConfig {
 
     @Bean("firstBean")
     @DependsOn(value = {
-        "secondBean",
-        "thirdBean"
+            "secondBean",
+            "thirdBean"
     })
     public FirstBean firstBean() {
         return new FirstBean();
@@ -172,3 +187,128 @@ public class AppConfig {
 }
 
 ```
+
+---
+
+## Bean Scope
+
+1. Singleton
+2. Prototype
+3. Request
+4. Session
+5. Application
+6. Websocket
+
+---
+
+| Scope    |   Scope    |  Result |
+|----------|:----------:|--------:|
+| Singlton |  Singlton  |   OK    |
+| Prtotype |  Prtotype  |   OK    |
+| Prtotype |  Singlton  |   OK    |
+| Singlton |  Prtotype  |   NO    |
+
+---
+
+> As a rule, use the prototype scope for all stateful beans and the singleton scope for stateless beans.
+
+```xml
+
+<bean id="yahooService" class="ir.lazydeveloper.service.MailService" scope="singleton"/>
+```
+
+#### Singleton
+
+```java
+
+@Configuration
+public class AppConfiguration {
+
+    @Bean
+    @Scope("singleton") // default scope 
+    public MailService mailService() {
+        return new MailService();
+    }
+}
+```
+
+#### Prototype
+
+```xml
+
+<bean id="yahooService" class="ir.lazydeveloper.service.MailService" scope="prototype"/>
+```
+
+```java
+
+@Configuration
+public class AppConfiguration {
+
+    @Bean
+    @Scope("prototype")
+    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public UserService userService() {
+        return new UserService();
+    }
+}
+```
+
+In contrast to the other scopes, Spring does not manage the complete lifecycle of a prototype bean
+
+---
+
+## Spring Lifecycle
+
+> InitializingBean and DisposableBean
+>
+In Spring, to interact with the container’s management of the bean lifecycle, you can implement the Spring
+InitializingBean and DisposableBean interfaces. The container calls afterPropertiesSet() for the former and destroy()
+for the latter to let the bean perform certain actions upon initialization and destruction of your beans.
+
+The JSR-250 @PostConstruct and @PreDestroy annotations are generally considered best practice for receiving lifecycle
+callbacks in a modern Spring application. Using these annotations means that your beans are not coupled to
+Spring-specific interfaces.
+
+1. For bean implemented InitializingBean, it will run afterPropertiesSet() after all bean properties have been set.
+2. For bean implemented DisposableBean, it will run destroy() after Spring container is released the bean.
+
+> @PostConstruct and @PreDestroy
+
+Note that the @PostConstruct and @PreDestroy annotation does not belong to Spring, it’s located in the J2ee library –
+common-annotations.jar.
+
+Note that both the @PostConstruct and @PreDestroy annotations are part of Java EE. Since Java EE was deprecated in Java
+9, and removed in Java 11, we have to add an additional dependency to use these annotations:
+
+```xml
+
+<dependency>
+    <groupId>javax.annotation</groupId>
+    <artifactId>javax.annotation-api</artifactId>
+    <version>1.3.2</version>
+</dependency>
+```
+
+```xml
+
+<bean id="yahooService" class="ir.lazydeveloper.service.MailService"
+      init-method="init" destroy-method="destroy">
+</bean>
+
+```
+
+```java
+
+@Configuration
+public class AppConfig {
+    @Bean(initMethod = "init", destroyMethod = "destroy")
+    public DatabaseInitiaizer databaseInitiaizer() {
+        return new DatabaseInitiaizer();
+    }
+}
+```
+
+---
+> @Resource Spring also supports injection using the JSR-250 @Resource annotation on fields or bean property setter methods
+
+> @Primary  Use @Primary to give higher preference to a bean when there are multiple beans of the same type.
