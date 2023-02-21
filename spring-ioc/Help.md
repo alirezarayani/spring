@@ -312,3 +312,28 @@ public class AppConfig {
 > @Resource Spring also supports injection using the JSR-250 @Resource annotation on fields or bean property setter methods
 
 > @Primary  Use @Primary to give higher preference to a bean when there are multiple beans of the same type.
+
+---
+
+### How to enable annotation-based wiring?
+
+Annotation wiring is not turned on in the Spring container by default. So, before we can use annotation-based wiring, we
+will need to enable it in our Spring configuration file. So consider the following configuration file in case you want
+to use any annotation in your Spring application.
+
+```xml
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<beans xmlns = "http://www.springframework.org/schema/beans"
+   xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:context = "http://www.springframework.org/schema/context"
+   xsi:schemaLocation = "http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+   <context:annotation-config/>
+   <!-- bean definitions go here -->
+
+</beans>
+```
