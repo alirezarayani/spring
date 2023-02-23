@@ -219,6 +219,137 @@ In the Spring Framework, an AOP proxy is a JDK dynamic proxy or a CGLIB proxy.
 Weaving It is the process of linking aspect with other application types or objects to create an advised object. Weaving
 can be done at compile time, load time or runtime. Spring AOP performs weaving at runtime.
 
+---
+
+# PointCut Express Language
+
+> Written as a String
+
+- Part of the advice annotation (@Before...)
+- No compile time checking
+
+> Expressions can be combined with boolean operators
+
+- && (boolean and)
+- || (boolean or)
+- ! (boolean not)
+
+---
+> Pointcut Designators
+
+- execution
+- args
+- within
+- target
+- @annotation
+- @args
+- @within
+- @target
+
+![Execution](../assests/Exection.jpg)
+
+> @annotation
+
+- @annotation(org.springframework.transaction.annotation.Transactional)
+
+    - Matches any method that has the Spring @Transactional annotation
+
+---
+
+> args
+
+- args(int,String)
+
+    - Matches only methods that take an int and a String
+
+---
+
+> @args
+
+- @args(org.springframework.stereotype.Service)
+
+    - Matches only methods that take one object whose class in annotated as being a Service
+
+        - Example: anyMethod (CustomerService service)
+
+---
+
+> Within
+
+- Within(ir.lazydeveloper.service.CustomerService)
+
+    - Any method within this class
+
+- Within(ir.lazydeveloper..*)
+
+    - Any method with in this packages, or sub-packages
+
+---
+
+> @Within
+
+- @Within(org.springframework.stereotype.Service)
+
+    - Any methids within a class annotated as a spring service
+
+---
+
+> traget
+
+- target(ir.lazydeveloper.service.ICusomerSercive)
+
+    - Specifies what the type of the Target has to be.
+    - Type can be an interface (then matches all classes that implement)
+    - Matches any methods in classes with the specified type
+
+---
+
+> @target
+
+- @target(org.springframework.stereotype.Service)
+    - Specifies annotation that the Target has to have annotation
+    - Matches any methods in classes annotated with service
+
+---
+
+## Type Of Advice
+
+- Before
+- Around
+- After
+- After Throwing
+- After Returning
+
+---
+
+## Spring AOP Example
+
+Spring1.2 old style AOP
+
+Though it is supported in spring 3, but it is recommended to use spring aop with aspectJ
+
+---
+
+### Aspect Dependencies
+
+```xml
+
+<dependencies>
+    <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjrt</artifactId>
+        <version>1.9.5</version>
+    </dependency>
+    <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjweaver</artifactId>
+        <version>1.9.19</version>
+    </dependency>
+</dependencies>
+```
+
+---
+
 ### Enabling @AspectJ Support
 
 The AspectJ support can be enabled with XML or Java-based configuration
@@ -228,7 +359,6 @@ The AspectJ support can be enabled with XML or Java-based configuration
 @Configuration
 @EnableAspectJAutoProxy
 public class AppConfig {
-
 }
 ```
 
@@ -264,100 +394,10 @@ public class LoggingAspect {
 
 ---
 
-# PointCut Express Language
+```java
+@Pointcut("within(@org.springframework.stereotype.Repository *)")
+public void repositoryClassMethods(){}
+```
 
-> Written as a String
-
-- Part of the advice annotation (@Before...)
-- No compile time checking
-
-> Expressions can be combined with boolean operators
-
-- && (boolean and)
-- || (boolean or)
-- ! (boolean not)
-
-> Expressions
----
-
-- execution
-- args
-- within
-- target
-- @annotation
-- @args
-- @within
-- @target
-
-![Execution](../assests/Exection.jpg)
-
-- @annotation
-
-  @annotation(org.springframework.transaction.annotation.Transactional)
-
-    - Matches any method that has the Spring @Transactional annotation
-
----
-
-- args
-
-  args(int,String)
-
-    - Matches only methods that take an int and a String
-
----
-
-- @args
-
-  @args(org.springframework.stereotype.Service)
-
-    - Matches only methods that take one object whose class in annotated as being a Service
-
-  Example: anyMethod (CustomerService service)
-
----
-
-- Within
-
-    - Within(ir.lazydeveloper.service.Customer Service)
-
-        - Any method within this class
-
-    - Within(ir.lazydeveloper..*)
-
-        - Any method with in this packages, or sub-packages
-
----
-
-- @Within
-
-    - @Within(org.springframework.stereotype.Service)
-
-        - Any methids within a class annotated as a spring service
-
----
-
-- traget
-
-  target(ir.lazydeveloper.service.ICusomerSercive)
-
-    - Specifies what the type of the Target has to be.
-    - Type can be an interface (then matches all classes that implement)
-    - Matches any methods in classes with the specified type
-
----
-
-- @target
-
-  @target(org.springframework.stereotype.Service)
-    - Specifies annotation that the Target has to have annotation
-    - Matches any methods in classes annotated with service
-
----
-
-## Spring AOP Example
-
-Spring1.2 old style AOP
-
-Though it is supported in spring 3, but it is recommended to use spring aop with aspectJ that we are going to learn in
-next page.
+The method declaration is called the **pointcut signature**. It provides a name that advice annotations can use to refer
+to that pointcut:

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="managerService" class="ir.lazydeveloper.service.ManagerService"/>
+    <bean id="messageLogger" class="ir.lazydeveloper.aop.AspectLogger"/>
+
+    <aop:config>
+        <aop:pointcut id="pointcutRef" expression="execution(* ir.lazydeveloper.service.*.*(..))"/>
+        <aop:pointcut id="pointcutRefAround"
+                      expression="execution(* ir.lazydeveloper.service.ManagerService.sendEmailEffectedByAround(..))"/>
+        <aop:aspect id="aspect" ref="messageLogger">
+            <aop:before method="beforeLogger" pointcut-ref="pointcutRef"/>
+        </aop:aspect>
+        <aop:aspect id="aspect" ref="messageLogger">
+            <aop:after method="afterLogger" pointcut-ref="pointcutRef"/>
+        </aop:aspect>
+        <aop:aspect id="aspect" ref="messageLogger">
+            <aop:after-throwing method="afterThrowingAdvice" throwing="java.lang.RuntimeException"
+                                pointcut-ref="pointcutRef"/>
+        </aop:aspect>
+        <aop:aspect id="aspect" ref="messageLogger">
+            <aop:around method="aroundAdvice" pointcut-ref="pointcutRefAround"/>
+        </aop:aspect>
+    </aop:config>
+</beans>
